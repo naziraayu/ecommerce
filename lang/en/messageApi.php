@@ -1,0 +1,35 @@
+<?php
+
+return [
+
+    'register success' => 'register success',
+    'login success' => 'login success',
+    'check your email or password' => 'check your email or password',
+    'logout success' => 'logout success',
+    'user found' => 'user found',
+    'user not found' => 'user not found',
+    'update success' => 'update success',
+    'OTP sent to the new email. Please verify to complete email change.' => 'OTP sent to the new email. Please verify to complete email change.',
+    'OTP sent to your email. Please check to proceed with password reset.' => 'OTP sent to your email. Please check to proceed with password reset.',
+    'Invalid OTP code' => 'Invalid OTP code',
+    'OTP code has expired' => 'OTP code has expired',
+    'Password has been reset successfully.' => 'Password has been reset successfully.',
+    'OTP verified successfully. Your email is now confirmed.' => 'OTP verified successfully. Your email is now confirmed.',
+    'products list fetched' => 'products list fetched',
+    'no orders found' => 'no orders found',
+    'orders fetched' => 'orders fetched',
+    'No items found in the cart' => 'No items found in the cart',
+    'Order placed successfully. Please proceed to payment.' => 'Order placed successfully. Please proceed to payment.',
+    'Failed to create payment.' => 'Failed to create payment.',
+    'Insufficient stock for the selected product' => 'Insufficient stock for the selected product',
+    'Unauthorized' => 'Unauthorized',
+    'Notification list fetched' => 'Notification list fetched',
+    'Notification marked as read successfully.' => 'Notification marked as read successfully.',
+    'Notification deleted successfully.' => 'Notification deleted successfully.',
+    'cart empty' => 'cart empty',
+    'cart items fetched' => 'cart items fetched',
+    'cart item added' => 'cart item added',
+    'cart item removed' => 'cart item removed',
+    'cart item updated' => 'cart item updated',
+
+];

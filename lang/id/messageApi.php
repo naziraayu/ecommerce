@@ -1,0 +1,35 @@
+<?php
+
+return [
+
+    'register success' => 'berhasil daftar',
+    'login success' => 'berhasil masuk',
+    'check your email or password' => 'periksa email atau kata sandi Anda',
+    'logout success' => 'berhasil keluar',
+    'user found' => 'pengguna ditemukan',
+    'user not found' => 'pengguna tidak ditemukan',
+    'update success' => 'berhasil diperbarui',
+    'OTP sent to the new email. Please verify to complete email change.' => 'OTP telah dikirim ke email baru. Silakan verifikasi untuk menyelesaikan perubahan email.',
+    'OTP sent to your email. Please check to proceed with password reset.' => 'OTP telah dikirim ke email Anda. Silakan periksa untuk melanjutkan pengaturan ulang kata sandi.',
+    'Invalid OTP code' => 'Kode OTP tidak valid',
+    'OTP code has expired' => 'Kode OTP telah kedaluwarsa',
+    'Password has been reset successfully.' => 'Kata sandi berhasil diatur ulang.',
+    'OTP verified successfully. Your email is now confirmed.' => 'OTP berhasil diverifikasi. Email Anda sekarang telah dikonfirmasi.',
+    'products list fetched' => 'daftar produk berhasil diambil',
+    'no orders found' => 'tidak ada pesanan ditemukan',
+    'orders fetched' => 'pesanan berhasil diambil',
+    'No items found in the cart' => 'Tidak ada item dalam keranjang',
+    'Order placed successfully. Please proceed to payment.' => 'Pesanan berhasil dibuat. Silakan lanjutkan ke pembayaran.',
+    'Failed to create payment.' => 'Gagal membuat pembayaran.',
+    'Insufficient stock for the selected product' => 'Stok tidak mencukupi untuk produk yang dipilih',
+    'Unauthorized' => 'Tidak diizinkan',
+    'Notification list fetched' => 'daftar notifikasi berhasil diambil',
+    'Notification marked as read successfully.' => 'Notifikasi berhasil ditandai sebagai dibaca.',
+    'Notification deleted successfully.' => 'Notifikasi berhasil dihapus.',
+    'cart empty' => 'keranjang kosong',
+    'cart items fetched' => 'item keranjang berhasil diambil',
+    'cart item added' => 'item keranjang berhasil ditambahkan',
+    'cart item removed' => 'item keranjang berhasil dihapus',
+    'cart item updated' => 'item keranjang berhasil diperbarui',
+
+];
