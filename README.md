@@ -4,17 +4,16 @@ This guide provides step-by-step instructions on setting up a Laravel project af
 
 ## Prerequisites
 Ensure that the following dependencies are installed on your system:
-- **PHP** (Minimum version 7.4 or as required by the project)
+- **PHP** (Minimum version 8.2 or as required by the project)
 - **Composer**
-- **Database** (MySQL, PostgreSQL, SQLite, etc.)
-- **Node.js & NPM** (If using Laravel Mix for asset compilation)
+- **Database** (MySQL)
 
 ## Installation Steps
 
 ### 1. Clone the Repository
 Clone the project from GitHub or GitLab:
 ```bash
-git clone https://github.com/username/repository.git
+git clone https://gitlab.com/andruchristo27/ecommerce.git
 cd repository
 ```
 
@@ -22,10 +21,6 @@ cd repository
 Run the following command to install PHP dependencies:
 ```bash
 composer install
-```
-If the project requires frontend dependencies, install them using:
-```bash
-npm install
 ```
 
 ### 3. Configure Environment Variables
@@ -59,17 +54,7 @@ If there are seeders available, run:
 php artisan migrate --seed
 ```
 
-### 6. Compile Frontend Assets (If Required)
-If Laravel Mix is used for frontend assets, compile them:
-```bash
-npm run dev
-```
-For production build:
-```bash
-npm run production
-```
-
-### 7. Serve the Application
+### 6. Serve the Application
 Run the Laravel development server:
 ```bash
 php artisan serve
@@ -78,16 +63,5 @@ Access the application in the browser:
 ```
 http://localhost:8000
 ```
-
-## Additional Notes
-- Ensure that proper permissions are set for `storage` and `bootstrap/cache` directories:
-  ```bash
-  chmod -R 775 storage bootstrap/cache
-  ```
-- If using a queue system, start the queue worker:
-  ```bash
-  php artisan queue:work
-  ```
-- Check Laravel documentation for additional setup: [Laravel Docs](https://laravel.com/docs)
 
 This completes the Laravel setup process. Happy coding!
