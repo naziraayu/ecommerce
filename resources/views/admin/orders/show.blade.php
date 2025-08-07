@@ -2,57 +2,57 @@
 
 @section('content')
 <div class="container">
-    <h2>{{__('order.order detail')}} : #</h2>
-    <p><strong>{{__('order.user')}} :</strong> </p>
-    <p><strong>{{__('order.total price')}} :</strong> Rp </p>
-    <p><strong>Status :</strong></p>
-    <p><strong>{{__('order.created at')}} :</strong></p>
+    <h2 class="mt-3">{{ __('order.order detail') }} : #{{ $order->id }}</h2>
 
-    <h4>{{__('order.Order Items')}}</h4>
-    
-    @php
-        // Data dummy untuk order dengan items
-        $order = (object)[
-            'id' => 101,
-            'items' => [
-                (object)[
-                    'product' => (object)['name' => 'Produk A'],
-                    'quantity' => 2,
-                    'price' => 50000
-                ],
-                (object)[
-                    'product' => (object)['name' => 'Produk B'],
-                    'quantity' => 1,
-                    'price' => 75000
-                ],
-                (object)[
-                    'product' => (object)['name' => 'Produk C'],
-                    'quantity' => 3,
-                    'price' => 30000
-                ],
-            ]
-        ];
-    @endphp
+    <div class="mb-3">
+        <p><strong>{{ __('order.user') }} :</strong> {{ $order->user->name }}</p>
+        <p><strong>{{ __('order.total price') }} :</strong> Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
+        <p><strong>Status :</strong> {{ ucfirst($order->status) }}</p>
+        <p><strong>{{ __('order.created at') }} :</strong> {{ $order->created_at->format('d M Y') }}</p>
+    </div>
 
-    <table id="table" class="table table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>{{ __('order.Product') }}</th>
-                <th>{{ __('order.Quantity') }}</th>
-                <th>{{ __('order.Price') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->items as $item)
-            <tr>
-                <td>{{ $item->product->name }}</td>
-                <td>{{ $item->quantity }}</td>
-                <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h4>{{ __('order.Order Items') }}</h4>
+    <div class="card">
+        <div class="card-body">
+            <table id="itemsTable" class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>{{ __('order.Product') }}</th>
+                        <th>{{ __('order.Quantity') }}</th>
+                        <th>{{ __('order.Price') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($order->items as $item)
+                    <tr>
+                        <td>{{ $item->product->name }}</td>
+                        <td>{{ $item->quantity }}</td>
+                        <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back to List</a>
+    <a href="{{ route('orders.index') }}" class="btn btn-secondary mt-3">
+        {{ __('order.back to list') }}
+    </a>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('#itemsTable').DataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            info: false,
+            language: {
+                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+            }
+        });
+    });
+</script>
+@endpush

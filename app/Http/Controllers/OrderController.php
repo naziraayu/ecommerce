@@ -14,11 +14,13 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return view('admin.orders.index');
+        $orders = Order::with('user')->get(); // ambil semua order dengan user-nya
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function show($id)
     {
-        return view('admin.orders.show');
+        $order = Order::with(['user', 'items.product'])->findOrFail($id);
+        return view('admin.orders.show', compact('order'));
     }
 }

@@ -1,75 +1,76 @@
 @extends('layouts.admin')
 
 @section('content')
-<h2 class="mt-3">{{__('product.products')}}</h2>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3>Manajemen Produk</h3>
+        <a href="{{ route('products.create') }}" class="btn btn-primary">Tambah Produk</a>
+    </div>
 
-<a href="{{ route('products.create') }}" class="btn btn-primary mb-3">{{__('product.add')}}</a>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-@if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-@php
-    // Data dummy untuk produk
-    $dummyProducts = [
-        (object)[
-            'id' => 1,
-            'name' => 'Produk A',
-            'description' => 'Deskripsi untuk Produk A',
-            'price' => 100000,
-            'stock' => 10,
-            'images' => 'produk-a.jpg'
-        ],
-        (object)[
-            'id' => 2,
-            'name' => 'Produk B',
-            'description' => 'Deskripsi untuk Produk B',
-            'price' => 150000,
-            'stock' => 5,
-            'images' => 'produk-b.jpg'
-        ],
-        (object)[
-            'id' => 3,
-            'name' => 'Produk C',
-            'description' => 'Deskripsi untuk Produk C',
-            'price' => 200000,
-            'stock' => 8,
-            'images' => 'produk-c.jpg'
-        ],
-    ];
-@endphp
-
-<table id="productTable" class="table table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>{{ __('product.name') }}</th>
-            <th>{{ __('product.description') }}</th>
-            <th>{{ __('product.price') }}</th>
-            <th>{{ __('product.stock') }}</th>
-            <th>{{ __('product.images') }}</th>
-            <th>{{ __('product.actions') }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($dummyProducts as $product)
-            <tr>
-                <td>{{ $product->id }}</td>
-                <td>{{ $product->name }}</td>
-                <td>{{ $product->description }}</td>
-                <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
-                <td>{{ $product->stock }}</td>
-                <td>
-                    <img src="{{ asset('images/' . $product->images) }}" alt="{{ $product->name }}" width="50">
-                </td>
-                <td>
-                    <a href="{{ route('products.edit', 1) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+    <div class="card">
+        <div class="card-body">
+            <table id="products-table" class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Kode</th>
+                        <th>Kategori</th>
+                        <th>Nama Produk</th>
+                        <th>Deskripsi</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Gambar</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($products as $index => $product)
+                        <tr>
+                            <td>{{ $product->code }}</td>
+                            <td>{{ $product->category->name }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->description }}</td>
+                            <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                            <td>{{ $product->stock }}</td>
+                            <td>
+                                @if ($product->images->count())
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach ($product->images as $image)
+                                            <img src="{{ asset('storage/' . $image->image) }}" width="60" class="img-thumbnail">
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-muted">Tidak ada gambar</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('#products-table').DataTable({
+            language: {
+                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+            },
+            scrollX: true
+        });
+    });
+</script>
+@endpush

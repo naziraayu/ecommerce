@@ -1,74 +1,74 @@
 @extends('layouts.admin')
 
 @section('content')
-<h2 class="mt-3">{{__('categories.categories')}}</h2>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3>Manajemen Kategori</h3>
+        <a href="{{ route('categories.create') }}" class="btn btn-primary">Tambah Kategori</a>
+    </div>
 
-<a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">{{__('categories.add')}}</a>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-@if (session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
-@if ($errors->any())
-<div class="alert alert-danger">
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Terjadi kesalahan!</strong>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-@if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-@php
-    // Data dummy untuk kategori
-    $dummyCategories = [
-        (object)[
-            'id' => 1,
-            'name' => 'Kategori A',
-            'description' => 'Deskripsi untuk Kategori A'
-        ],
-        (object)[
-            'id' => 2,
-            'name' => 'Kategori B',
-            'description' => 'Deskripsi untuk Kategori B'
-        ],
-        (object)[
-            'id' => 3,
-            'name' => 'Kategori C',
-            'description' => 'Deskripsi untuk Kategori C'
-        ],
-    ];
-@endphp
-
-<table id="categoriesTable" class="table table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>{{__('categories.name')}}</th>
-            <th>{{__('categories.description')}}</th>
-            <th>{{__('categories.actions')}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($dummyCategories as $category)
-            <tr>
-                <td>{{ $category->id }}</td>
-                <td>{{ $category->name }}</td>
-                <td>{{ $category->description }}</td>
-                <td>
-                    <a href="{{ route('categories.edit', 1) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered table-hover" id="categories-table">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Kode</th> {{-- Tambahan --}}
+                        <th>Nama Kategori</th>
+                        <th>Deskripsi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($categories as $index => $category)
+                        <tr>
+                            <td>{{ $category->id }}</td>
+                            <td>{{ $category->code }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td>{{ $category->description }}</td>
+                            <td>
+                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('#categories-table').DataTable({
+            language: {
+                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+            }
+        });
+    });
+</script>
+@endpush

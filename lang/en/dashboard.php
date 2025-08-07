@@ -2,13 +2,13 @@
 
 return [
 
-    'admin dashboard' => 'Admin Dashboard',
-    'total users' => 'Total Users',
-    'total products' => 'Total Products',
-    'total orders' => 'Total Orders',
-    'recent orders' => 'Recent Orders',
+    'admin_dashboard' => 'Admin Dashboard',
+    'total_users' => 'Total Users',
+    'total_products' => 'Total Products',
+    'total_orders' => 'Total Orders',
+    'recent_orders' => 'Recent Orders',
     'user' => 'User',
-    'total price' => 'Total Price',
-    'created at' => 'Created At',
+    'total_price' => 'Total Price',
+    'created_at' => 'Created At',
 
 ];

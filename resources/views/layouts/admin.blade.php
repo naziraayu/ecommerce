@@ -1,3 +1,4 @@
+{{-- views/layouts/admin --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,52 +20,108 @@
             <nav class="col-md-2 d-flex flex-column flex-shrink-0 p-3 bg-light ">
                 <div class="sidebar-sticky">
                     <ul class="nav nav-pills flex-column mb-auto">
+                        {{-- Dashboard: semua user yang login bisa lihat --}}
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ route('admin.dashboard') }}">
-                            <img src="{{ asset('assets/dashboard.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}" 
+                            aria-current="page" href="{{ route('admin.dashboard') }}">
+                                <img src="{{ asset('assets/dashboard.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Dashboard
                             </a>
                         </li>
+
+                        {{-- Categories --}}
+                        @if(auth()->user()->roleData && in_array('manage_categories', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('categories*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('categories*') ? 'active' : '' }}" 
+                            href="{{ route('categories.index') }}">
                                 <img src="{{ asset('assets/category.svg') }}" alt="Categories" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.categories')}}
+                                {{ __('sidebar.categories') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Products --}}
+                        @if(auth()->user()->roleData && in_array('manage_products', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('products*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-                            <img src="{{ asset('assets/product.svg') }}" alt="Products" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.products')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('products*') ? 'active' : '' }}" 
+                            href="{{ route('products.index') }}">
+                                <img src="{{ asset('assets/product.svg') }}" alt="Products" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.products') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Users --}}
+                        @if(auth()->user()->roleData && in_array('manage_users', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                            <img src="{{ asset('assets/user.svg') }}" alt="Users" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.users')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('users*') ? 'active' : '' }}" 
+                            href="{{ route('users.index') }}">
+                                <img src="{{ asset('assets/user.svg') }}" alt="Users" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.users') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Admins --}}
+                        @if(auth()->user()->roleData && in_array('manage_admins', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admins*') ? 'active' : '' }}" href="{{ route('admins.index') }}">
-                            <img src="{{ asset('assets/admin.svg') }}" alt="Admins" style="width: 19px; height: 19px; margin-right: 6px;">
-                                {{__('sidebar.admins')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admins*') ? 'active' : '' }}" 
+                            href="{{ route('admins.index') }}">
+                                <img src="{{ asset('assets/admin.svg') }}" alt="Admins" style="width: 19px; height: 19px; margin-right: 6px;">
+                                {{ __('sidebar.admins') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Orders --}}
+                        @if(auth()->user()->roleData && in_array('manage_orders', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('order*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
-                            <img src="{{ asset('assets/order.svg') }}" alt="Orders" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.orders')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('orders*') ? 'active' : '' }}" 
+                            href="{{ route('orders.index') }}">
+                                <img src="{{ asset('assets/order.svg') }}" alt="Orders" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.orders') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Settings --}}
+                        @if(auth()->user()->roleData && in_array('manage_settings', auth()->user()->roleData->permissions ?? []))
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('settings*') ? 'active' : '' }}" href="{{ route('settings.index') }}">
-                            <img src="{{ asset('assets/gear.svg') }}" alt="Settings" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.settings')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('settings*') ? 'active' : '' }}" 
+                            href="{{ route('settings.index') }}">
+                                <img src="{{ asset('assets/gear.svg') }}" alt="Settings" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.settings') }}
                             </a>
                         </li>
+                        @endif
+
+                        {{-- Profile --}}
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('logout*') ? 'active' : '' }}" href="#" onclick="event.preventDefault(); if(confirm('Apakah anda yakin ingin logout?')) { document.getElementById('logout-form').submit(); }">
-                            <img src="{{ asset('assets/logout.svg') }}" alt="Logout" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.logout')}}
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
+                            href="{{ route('profile.edit') }}">
+                                <img src="{{ asset('assets/user.svg') }}" alt="Profile" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('Profile') }}
+                            </a>
+                        </li>
+
+
+                        {{-- Role Management khusus superadmin --}}
+                        @if(auth()->user()->roleData && auth()->user()->roleData->name === 'superadmin')
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('roles*') ? 'active' : '' }}" 
+                            href="{{ route('roles.index') }}">
+                                <img src="{{ asset('assets/admin.svg') }}" alt="Roles" style="width: 19px; height: 19px; margin-right: 6px;">
+                                {{ __('sidebar.roles') }}
+                            </a>
+                        </li>
+                        @endif
+
+                        {{-- Logout: semua user bisa --}}
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('logout*') ? 'active' : '' }}" 
+                            href="#" onclick="event.preventDefault(); if(confirm('Apakah anda yakin ingin logout?')) { document.getElementById('logout-form').submit(); }">
+                                <img src="{{ asset('assets/logout.svg') }}" alt="Logout" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.logout') }}
                             </a>
                         </li>
                     </ul>

@@ -2,13 +2,13 @@
 
 return [
 
-    'admin dashboard' => 'Dashboard Admin',
-    'total users' => 'Total Pengguna',
-    'total products' => 'Total Produk',
-    'total orders' => 'Total Pesanan',
-    'recent orders' => 'Pesanan Terbaru',
+    'admin_dashboard' => 'Dashboard Admin',
+    'total_users' => 'Total Pengguna',
+    'total_products' => 'Total Produk',
+    'total_orders' => 'Total Pesanan',
+    'recent_orders' => 'Pesanan Terbaru',
     'user' => 'Pengguna',
-    'total price' => 'Total Harga',
-    'created at' => 'Pesanan Dibuat',
+    'total_price' => 'Total Harga',
+    'created_at' => 'Pesanan Dibuat',
 
 ];

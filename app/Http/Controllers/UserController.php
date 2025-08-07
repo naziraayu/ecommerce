@@ -13,11 +13,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('admin.users.index');
+        $users = User::where('role', 'user')->get();
+        return view('admin.users.index', compact('users'));
     }
 
     public function show($id)
     {
-        return view('admin.users.show');
+        $user = User::with(['roleData', 'orders'])->findOrFail($id); // pastikan relasi roleData & orders ada
+        return view('admin.users.show', compact('user'));
     }
 }

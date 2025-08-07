@@ -21,20 +21,22 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique(User::class),
-            ],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+            'address' => ['nullable', 'string'],
+            'phone_number' => ['nullable', 'string'],
+            'role_id' => ['nullable', 'integer'],
         ])->validate();
 
         return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'address' => $input['address'] ?? null,
+            'phone_number' => $input['phone_number'] ?? null,
+            'role_id' => $input['role_id'] ?? null,
+            'role' => 'user',
         ]);
     }
+
 }

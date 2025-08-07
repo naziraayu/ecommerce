@@ -18,8 +18,28 @@ class AuthenticationController extends Controller
 
     public function register(Request $request)
     {
-        return redirect('/dashboard')->with('success', 'Registration successful. Please log in.');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'address' => 'nullable|string',
+            'phone_number' => 'nullable|string',
+            'role_id' => 'nullable|integer',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'address' => $request->address,
+            'phone_number' => $request->phone_number,
+            'role_id' => $request->role_id,
+            'role' => 'user',
+        ]);
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
     }
+
 
     public function loginForm()
     {

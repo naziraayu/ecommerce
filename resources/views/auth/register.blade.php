@@ -36,11 +36,11 @@
         </div>
         <div class="form-group">
             <label for="password">{{__('auth.password')}}</label>
-            <input type="password" name="password" class="form-control" value="{{ old('password') }}" required>
+            <input type="password" name="password" class="form-control" required>
         </div>
         <div class="form-group">
             <label for="password_confirmation">{{__('auth.confirm password')}}</label>
-            <input type="password" name="password_confirmation" class="form-control" value="{{ old('password_confirmation') }}" required>
+            <input type="password" name="password_confirmation" class="form-control" required>
         </div>
         <div class="form-group">
             <label for="address">{{__('auth.address')}}</label>

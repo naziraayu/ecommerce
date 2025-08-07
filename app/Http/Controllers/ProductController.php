@@ -20,31 +20,101 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return view('admin.products.index');
+        $products = Product::with('images')->get();
+        return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('admin.products.create');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        
+        $request->validate([
+            'name' => 'required',
+            'category_id' => 'required',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'description' => 'nullable',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Generate product code
+        $lastProduct = Product::orderBy('id', 'desc')->first();
+        $nextId = $lastProduct ? $lastProduct->id + 1 : 1;
+        $code = 'PRD-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+        $product = Product::create([
+            'code' => $code,
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+        ]);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products', 'public');
+
+                $product->images()->create([
+                    'image' => $path
+                ]);
+            }
+        }
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
-    public function edit()
+
+    public function edit(Product $product)
     {
-        return view('admin.products.edit');
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function update()
+
+    public function update(Request $request, $id)
     {
-        
+        $product = Product::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $product->update($validatedData);
+
+        // Simpan gambar baru jika ada
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products', 'public');
+                $product->images()->create(['image' => $path]);
+            }
+        }
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-    public function destroy()
+   public function destroy($id)
     {
-        
+        $product = Product::findOrFail($id);
+
+        // Hapus gambar dari storage
+        foreach ($product->images as $image) {
+            Storage::delete($image->image);
+            $image->delete();
+        }
+
+        $product->delete();
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
     }
+
 }

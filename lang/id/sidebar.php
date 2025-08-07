@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'dashboard' => 'Dashboard',
     'categories' => 'Kategori',
     'products' => 'Produk',
     'users' => 'Pengguna',

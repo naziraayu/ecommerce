@@ -1,16 +1,19 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2 class="mt-3">{{__('product.add')}}</h2>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3>Tambah Produk</h3>
+        <a href="{{ route('products.index') }}" class="btn btn-secondary">Kembali</a>
+    </div>
+
     @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
     @if ($errors->any())
         <div class="alert alert-danger">
-            <ul>
+            <strong>Terjadi kesalahan!</strong>
+            <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -18,56 +21,57 @@
         </div>
     @endif
 
-    @php
-        // Data dummy untuk kategori
-        $dummyCategories = [
-            (object)[
-                'id' => 1,
-                'name' => 'Kategori A'
-            ],
-            (object)[
-                'id' => 2,
-                'name' => 'Kategori B'
-            ],
-            (object)[
-                'id' => 3,
-                'name' => 'Kategori C'
-            ],
-        ];
-    @endphp
-    
-    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="form-group">
-            <label for="category_id">{{__('product.category')}}</label>
-            <select name="category_id" class="form-control select2" required>
-                <option value="">{{ __('product.select a category') }}</option>
-                @foreach ($dummyCategories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="category_id" class="form-label">Kategori</label>
+                    <select name="category_id" class="form-select select2" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nama Produk</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Deskripsi</label>
+                    <textarea name="description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Harga</label>
+                    <input type="number" step="0.01" name="price" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stok</label>
+                    <input type="number" name="stock" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="images" class="form-label">Gambar Produk</label>
+                    <input type="file" name="images[]" class="form-control" multiple required>
+                    <small class="text-muted">Dapat mengupload lebih dari satu gambar</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="name">{{__('product.product name')}}</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="description">{{__('product.description')}}</label>
-            <textarea name="description" class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="price">{{__('product.price')}}</label>
-            <input type="number" step="0.01" name="price" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="stock">{{__('product.stock')}}</label>
-            <input type="number" name="stock" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="images">{{__('product.product images')}}</label>
-            <input type="file" name="images[]"  class="form-control" multiple required>
-            <small class="form-text text-muted">{{__('product.nb')}}</small>
-        </div>
-        <button type="submit" class="btn btn-primary">{{__('product.create product')}}</button>
-    </form>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('.select2').select2({ width: '100%' });
+    });
+</script>
+@endpush
