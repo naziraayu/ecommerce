@@ -41,7 +41,6 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // Generate product code
         $lastProduct = Product::orderBy('id', 'desc')->first();
         $nextId = $lastProduct ? $lastProduct->id + 1 : 1;
         $code = 'PRD-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
@@ -91,7 +90,6 @@ class ProductController extends Controller
 
         $product->update($validatedData);
 
-        // Simpan gambar baru jika ada
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('products', 'public');
@@ -106,7 +104,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Hapus gambar dari storage
         foreach ($product->images as $image) {
             Storage::delete($image->image);
             $image->delete();
@@ -116,5 +113,46 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
     }
+
+    public function getProductListApi(Request $request)
+    {
+        $query = Product::with(['category', 'images']);
+
+        // Filter berdasarkan kategori
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Sort by harga
+        if ($request->has('sort')) {
+            $sort = $request->sort === 'desc' ? 'desc' : 'asc';
+            $query->orderBy('price', $sort);
+        }
+
+        $products = $query->get();
+
+        // Format response untuk mobile
+        $data = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'code' => $product->code,
+                'name' => $product->name,
+                'price' => $product->price,
+                'stock' => $product->stock,
+                'description' => $product->description,
+                'category' => $product->category->name ?? null,
+                'images' => $product->images->map(function ($img) {
+                    return asset('storage/' . $img->image);
+                }),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar produk berhasil diambil.',
+            'data' => $data
+        ]);
+    }
+
 
 }

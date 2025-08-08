@@ -54,7 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('admins/create', [AdminController::class, 'create'])->name('admins.create');
     Route::post('admins', [AdminController::class, 'store'])->name('admins.store');
     Route::get('admins/{id}', [AdminController::class, 'edit'])->name('admins.edit');
-    Route::delete('admins/{id}', [AdminController::class, 'show'])->name('admins.destroy');
+    Route::delete('admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
     Route::get('/search-role', [AdminController::class, 'search'])->name('search.role');
     Route::put('admins/{id}', [AdminController::class, 'update'])->name('admins.update');
 
@@ -74,7 +74,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'role:superadmin'])->group(function () {
         Route::resource('roles', RoleController::class);
     });
-
 
     // =============================
     // 🎯 Role-Based Permissions

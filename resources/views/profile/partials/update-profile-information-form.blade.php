@@ -47,6 +47,25 @@
             </div>
         @endif
     </div>
+    {{-- Address --}}
+    <div class="mb-3">
+        <label for="address" class="form-label">{{ __('Address') }}</label>
+        <input type="text" class="form-control" id="address" name="address"
+            value="{{ old('address', $user->address) }}" required autocomplete="address">
+        @error('address')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    {{-- Phone Number --}}
+    <div class="mb-3">
+        <label for="phone_number" class="form-label">{{ __('Phone Number') }}</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number"
+            value="{{ old('phone_number', $user->phone_number) }}" required autocomplete="tel">
+        @error('phone_number')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
+    </div>
 
     <div class="d-flex align-items-center gap-3">
         <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>

@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'token', // karena kamu pakai kolom api_token
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*
