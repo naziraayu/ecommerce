@@ -2,6 +2,8 @@
 
 return [
 
+    'management' => 'Products Management',
+    'code'=> 'Products Code',
     'products' => 'Products',
     'category' => 'Category',
     'add' => 'Add New Product',
@@ -11,16 +13,20 @@ return [
     'product name' => 'Product Name',
     'description' => 'Description',
     'price' => 'Price',
-    'stock' => 'Stock',
+    'stock' => 'Stock', 
     'images' => 'Images',
     'actions' => 'Actions',
-    'select a category' => 'Select a category',
+    'select' => 'Select a category',
     'product images' => 'Product Images',
     'create product' => 'Create Product',
     'edit product' => 'Edit Product',
+    'cancel' => 'Cancel',
     'update product' => 'Update Product',
     'nb' => 'You can select more than 1 file.',
     'nb2' => 'You can add more images. Current images:',
+    'error occurred' => 'An error occurred!',
     'delete' => 'Delete',
+    'new image'=> 'New Image (Optional)',
+    'ignore' => 'Ignore if you dont want to add a new image',
 
 ];

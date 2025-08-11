@@ -1,7 +1,7 @@
 <div class="mb-4">
-    <h4>{{ __('Profile Information') }}</h4>
+    <h4>{{ __('profil.profile_information') }}</h4>
     <p class="text-muted">
-        {{ __("Update your account's profile information and email address.") }}
+        {{ __('profil.ket') }} 
     </p>
 </div>
 
@@ -14,7 +14,7 @@
     @method('PATCH')
 
     <div class="mb-3">
-        <label for="name" class="form-label">{{ __('Name') }}</label>
+        <label for="name" class="form-label">{{ __('profil.name') }}</label>
         <input type="text" class="form-control" id="name" name="name"
             value="{{ old('name', $user->name) }}" required autocomplete="name" autofocus>
         @error('name')
@@ -23,7 +23,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="email" class="form-label">{{ __('Email') }}</label>
+        <label for="email" class="form-label">{{ __('profil.email') }}</label>
         <input type="email" class="form-control" id="email" name="email"
             value="{{ old('email', $user->email) }}" required autocomplete="username">
         @error('email')
@@ -49,7 +49,7 @@
     </div>
     {{-- Address --}}
     <div class="mb-3">
-        <label for="address" class="form-label">{{ __('Address') }}</label>
+        <label for="address" class="form-label">{{ __('profil.address') }}</label>
         <input type="text" class="form-control" id="address" name="address"
             value="{{ old('address', $user->address) }}" required autocomplete="address">
         @error('address')
@@ -59,7 +59,7 @@
 
     {{-- Phone Number --}}
     <div class="mb-3">
-        <label for="phone_number" class="form-label">{{ __('Phone Number') }}</label>
+        <label for="phone_number" class="form-label">{{ __('profil.phone_number') }}</label>
         <input type="text" class="form-control" id="phone_number" name="phone_number"
             value="{{ old('phone_number', $user->phone_number) }}" required autocomplete="tel">
         @error('phone_number')
@@ -68,7 +68,7 @@
     </div>
 
     <div class="d-flex align-items-center gap-3">
-        <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
+        <button type="submit" class="btn btn-primary">{{ __('profil.save') }}</button>
 
         @if (session('status') === 'profile-updated')
             <span class="text-success small">{{ __('Saved.') }}</span>

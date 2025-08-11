@@ -2,6 +2,7 @@
 
 return [
 
+    'management' => 'Admin Management',
     'add' => 'Add Admin',
     'list admins' => 'List Admins',
     'role name' => 'Role',
@@ -10,5 +11,7 @@ return [
     'category name' => 'Category Name',
     'edit admin' => 'Edit Admin',
     'update role' => 'Update Role',
+    'cancel'=> 'Cancel',
 
 ];
+ 

@@ -2,9 +2,10 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-    <h3 class="mt-3">{{ __('Management Admin') }}</h3>
-    <a href="{{ route('admins.create') }}" class="btn btn-primary">Tambah Admin</a>
+    <h3 class="mt-3">{{ __('admin.management') }}</h3>
+    <a href="{{ route('admins.create') }}" class="btn btn-primary">{{ __('admin.add') }}</a>
 </div>
+
 @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
@@ -22,12 +23,29 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($admins as $admin)
+                @foreach($users as $admin) {{-- ganti $admins ke $users biar sesuai controller --}}
                     <tr>
                         <td>{{ $admin->id }}</td>
                         <td>{{ $admin->name }}</td>
                         <td>{{ $admin->email }}</td>
-                        <td>{{ $admin->roleData->name ?? '-' }}</td>
+                        <td>
+                            <form action="{{ route('admins.update', $admin->id) }}" method="POST" id="roleForm-{{ $admin->id }}">
+                                @csrf
+                                @method('PUT')
+                                <select name="role_id" class="form-select form-select-sm" onchange="document.getElementById('roleForm-{{ $admin->id }}').submit()">
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" {{ $admin->role_id == $role->id ? 'selected' : '' }}>
+                                            {{ ucfirst($role->name) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                {{-- hidden inputs untuk data lain supaya update() nggak error --}}
+                                <input type="hidden" name="name" value="{{ $admin->name }}">
+                                <input type="hidden" name="email" value="{{ $admin->email }}">
+                                <input type="hidden" name="phone_number" value="{{ $admin->phone_number }}">
+                                <input type="hidden" name="address" value="{{ $admin->address }}">
+                            </form>
+                        </td>
                         <td>
                             <a href="{{ route('admins.edit', $admin->id) }}" class="btn btn-sm btn-warning">Edit</a>
                             <form action="{{ route('admins.destroy', $admin->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus admin ini?')">

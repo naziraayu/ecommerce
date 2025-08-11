@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3>Edit Produk</h3>
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">Kembali</a>
+        <h3>{{ __('product.edit product') }}</h3>
+        <a href="{{ route('products.index') }}" class="btn btn-secondary">{{ __('product.cancel') }}</a>
     </div>
 
     @if (session('error'))
@@ -12,7 +12,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger">
-            <strong>Terjadi kesalahan!</strong>
+            <strong>{{ __('product.error occurred') }}</strong>
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -42,9 +42,9 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label for="category_id" class="form-label">Kategori</label>
+                    <label for="category_id" class="form-label">{{ __('product.category') }}</label>
                     <select name="category_id" class="form-select select2" required>
-                        <option value="">Pilih Kategori</option>
+                        <option value="">{{ __('product.select') }}</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
@@ -54,32 +54,32 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama Produk</label>
+                    <label for="name" class="form-label">{{ __('product.product name') }}</label>
                     <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label">Deskripsi</label>
+                    <label for="description" class="form-label">{{ __('product.description') }}</label>
                     <textarea name="description" class="form-control" rows="3">{{ old('description', $product->description) }}</textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label for="price" class="form-label">Harga</label>
+                    <label for="price" class="form-label">{{ __('product.price') }}</label>
                     <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price', $product->price) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="stock" class="form-label">Stok</label>
+                    <label for="stock" class="form-label">{{ __('product.stock') }}</label>
                     <input type="number" name="stock" class="form-control" value="{{ old('stock', $product->stock) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="images" class="form-label">Gambar Baru (Opsional)</label>
+                    <label for="images" class="form-label">{{ __('product.new image') }}</label>
                     <input type="file" name="images[]" class="form-control" multiple>
-                    <small class="text-muted">Abaikan jika tidak ingin menambah gambar baru.</small>
+                    <small class="text-muted">{{ __('product.ignore') }}</small>
                 </div>
 
-                <button type="submit" class="btn btn-success">Update Produk</button>
+                <button type="submit" class="btn btn-success">{{ __('product.update product') }}</button>
             </form>
         </div>
     </div>

@@ -129,6 +129,11 @@ return [
         'table' => 'migrations',
         'update_date_on_publish' => true,
     ],
+    'testing' => [
+        'driver' => 'sqlite',
+        'database' => ':memory:',
+        'prefix' => '',
+    ],
 
     /*
     |--------------------------------------------------------------------------

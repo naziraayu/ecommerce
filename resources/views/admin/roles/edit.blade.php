@@ -2,13 +2,13 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3>Edit Role</h3>
-        <a href="{{ route('roles.index') }}" class="btn btn-secondary">Kembali</a>
+        <h3>{{ __('role.edit') }}</h3>
+        <a href="{{ route('roles.index') }}" class="btn btn-secondary">{{ __('role.cancel') }}</a>
     </div>
 
     @if ($errors->any())
         <div class="alert alert-danger">
-            <strong>Terjadi kesalahan!</strong>
+            <strong>{{ __('role.error') }}</strong>
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -24,12 +24,12 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama Role</label>
+                    <label for="name" class="form-label">{{ __('role.role_name') }}</label>
                     <input type="text" name="name" class="form-control" value="{{ old('name', $role->name) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="permissions" class="form-label">Permissions</label>
+                    <label for="permissions" class="form-label">{{ __('role.permissions') }}</label>
                     <select name="permissions[]" class="form-select select2" multiple="multiple" required>
                         @foreach ($permissions as $permission)
                             <option value="{{ $permission }}" 
@@ -40,7 +40,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn btn-success">Perbarui</button>
+                <button type="submit" class="btn btn-success">{{ __('role.update') }}</button>
             </form>
         </div>
     </div>

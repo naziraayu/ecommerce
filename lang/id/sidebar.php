@@ -9,6 +9,7 @@ return [
     'orders' => 'Pesanan',
     'roles' => 'Peran',
     'settings' => 'Pengaturan',
+    'profile' => 'Profil',
     'logout' => 'Keluar',
 
 ];

@@ -39,7 +39,7 @@ class NewOrder extends Notification
         $mail = (new MailMessage)
             ->subject('New Order Received')
             ->line('A new order has been placed.')
-            ->action('View Order', url('/orders/' . $this->order->id))
+            ->action('View Order', route('orders.show', $this->order->id))
             ->line('Thank you for using our application!')
             ->salutation('Admin, Ecommerce');
 

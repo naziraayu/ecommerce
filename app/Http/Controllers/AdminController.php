@@ -13,13 +13,20 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function index()
-    {
-        $admins = User::whereHas('roleData', function ($query) {
-            $query->where('name', '!=', 'user'); // hanya admin (bukan user biasa)
-        })->get();
+{
+    $users = User::where('id', '!=', Auth::id())
+        ->whereHas('roleData', function($query) {
+            $query->where('name', 'admin');
+        })
+        ->get();
 
-        return view('admin.admins.index', compact('admins'));
-    }
+    // Dropdown role tetap bisa pilih admin atau superadmin kalau mau upgrade
+    $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
+
+    return view('admin.admins.index', compact('users', 'roles'));
+}
+
+
 
     public function create()
     {
@@ -37,12 +44,8 @@ class AdminController extends Controller
             'phone_number' => 'required|string|max:20',
         ]);
 
-        // Ambil role admin (pastikan role 'admin' ada di tabel roles)
-        $adminRole = Role::where('name', 'admin')->first();
-
-        if (!$adminRole) {
-            return redirect()->back()->with('error', 'Role admin tidak ditemukan.');
-        }
+        // Role default = admin
+        $adminRole = Role::where('name', 'admin')->firstOrFail();
 
         User::create([
             'name' => $request->name,
@@ -60,7 +63,8 @@ class AdminController extends Controller
     public function edit($id)
     {
         $admin = User::findOrFail($id);
-        return view('admin.admins.edit', compact('admin'));
+        $roles = Role::all(); // supaya dropdown muncul di edit
+        return view('admin.admins.edit', compact('admin', 'roles'));
     }
 
     public function update(Request $request, $id)
@@ -73,12 +77,14 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
+            'role_id' => 'required|exists:roles,id',
         ]);
 
         $admin->name = $validated['name'];
         $admin->email = $validated['email'];
         $admin->phone_number = $validated['phone_number'] ?? null;
         $admin->address = $validated['address'] ?? null;
+        $admin->role_id = $validated['role_id']; // update role
 
         if (!empty($validated['password'])) {
             $admin->password = Hash::make($validated['password']);

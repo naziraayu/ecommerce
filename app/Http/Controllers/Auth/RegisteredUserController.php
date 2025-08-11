@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
@@ -48,8 +49,16 @@ class RegisteredUserController extends Controller
             'role' => 'admin',
         ]);
 
-        event(new Registered($user));
+        // Ambil role admin dari tabel roles
+        $adminRole = Role::where('name', 'admin')->first();
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login.');
+        if ($adminRole) {
+            $user->role_id = $adminRole->id;
+            $user->save();
+        }
+
+        Auth::login($user);
+
+        return redirect()->route('verification.notice');
     }
 }

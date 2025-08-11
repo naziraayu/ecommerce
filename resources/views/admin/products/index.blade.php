@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3>Manajemen Produk</h3>
-        <a href="{{ route('products.create') }}" class="btn btn-primary">Tambah Produk</a>
+        <h3>{{ __('product.management') }}</h3>
+        <a href="{{ route('products.create') }}" class="btn btn-primary">{{ __('product.add') }}</a>
     </div>
 
     @if (session('success'))
@@ -15,14 +15,14 @@
             <table id="products-table" class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>Kode</th>
-                        <th>Kategori</th>
-                        <th>Nama Produk</th>
-                        <th>Deskripsi</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Gambar</th>
-                        <th>Aksi</th>
+                        <th>{{ __('product.code') }}</th>
+                        <th>{{ __('product.category') }}</th>
+                        <th>{{ __('product.product name') }}</th>
+                        <th>{{ __('product.description') }}</th>
+                        <th>{{ __('product.price') }}</th>
+                        <th>{{ __('product.stock') }}</th>
+                        <th>{{ __('product.images') }}</th>
+                        <th>{{ __('product.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>

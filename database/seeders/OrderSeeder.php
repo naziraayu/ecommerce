@@ -17,12 +17,12 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         // Ambil user yang sudah ada (misal ID 9 & 10)
-        $user1 = User::find(2);
-        $user2 = User::find(3);
+        $user1 = User::find(4);
+        $user2 = User::find(5);
 
         // Ambil produk yang sudah ada (misal ID 1 & 2)
-        $product1 = Product::find(1);
-        $product2 = Product::find(2);
+        $product1 = Product::find(5);
+        $product2 = Product::find(6);
 
         // Buat order pertama
         $order1 = Order::create([

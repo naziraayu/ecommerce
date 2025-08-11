@@ -2,7 +2,8 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3>{{ __('Profile') }}</h3>
+        <h3>{{ __('profil.profile') }}</h3>
+
     </div>
 
     @if (session('status') === 'profile-updated')
@@ -13,7 +14,7 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            {{ __('Informasi Profil') }}
+            {{ __('profil.profile_information') }}
         </div>
         <div class="card-body">
             @include('profile.partials.update-profile-information-form')
@@ -22,7 +23,7 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            {{ __('Ubah Password') }}
+            {{ __('profil.update_password') }}
         </div>
         <div class="card-body">
             @include('profile.partials.update-password-form')
@@ -31,10 +32,22 @@
 
     <div class="card mb-4">
         <div class="card-header">
-            {{ __('Hapus Akun') }}
+            {{ __('profil.delete_account') }}
         </div>
         <div class="card-body">
             @include('profile.partials.delete-user-form')
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('#categories-table').DataTable({
+            language: {
+                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+            }
+        });
+    });
+</script>
+@endpush

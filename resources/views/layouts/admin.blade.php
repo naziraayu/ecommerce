@@ -100,7 +100,7 @@
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
                             href="{{ route('profile.edit') }}">
                                 <img src="{{ asset('assets/user.svg') }}" alt="Profile" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{ __('Profile') }}
+                                {{ __('sidebar.profile') }}
                             </a>
                         </li>
 
@@ -143,6 +143,7 @@
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script> -->
     
     <script>

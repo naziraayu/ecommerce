@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CategoryExport;
 use App\Imports\CategoryImport;
+use Yajra\DataTables\DataTables;
+use App\Exports\CategoriesExport;
+use App\Imports\CategoriesImport;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -74,5 +76,21 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new CategoriesExport, 'categories.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new CategoriesImport, $request->file('file'));
+
+        return redirect()->route('categories.index')->with('success', 'Data kategori berhasil diimport');
     }
 }

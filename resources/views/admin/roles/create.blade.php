@@ -3,15 +3,15 @@
 @section('content')
 <div class="card mt-4 shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Buat Role Baru</h5>
-        <a href="{{ route('roles.index') }}" class="btn btn-light btn-sm">Kembali</a>
+        <h5 class="mb-0">{{ __('role.create_title') }}</h5>
+        <a href="{{ route('roles.index') }}" class="btn btn-light btn-sm">{{ __('role.cancel') }}</a>
     </div>
     <div class="card-body">
 
         {{-- Error alert --}}
         @if ($errors->any())
             <div class="alert alert-danger">
-                <strong>Terjadi kesalahan!</strong>
+                <strong>{{ __('role.error') }}</strong>
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -25,12 +25,12 @@
             @csrf
 
             <div class="mb-3">
-                <label for="name" class="form-label">Nama Role</label>
-                <input type="text" name="name" class="form-control" placeholder="Contoh: superadmin" value="{{ old('name') }}" required>
+                <label for="name" class="form-label">{{ __('role.role_name') }}</label>
+                <input type="text" name="name" class="form-control" placeholder="{{ __('role.placeholder_role') }}" value="{{ old('name') }}" required>
             </div>
 
             <div class="mb-3">
-                <label for="permissions" class="form-label">Permissions</label>
+                <label for="permissions" class="form-label">{{ __('role.permissions') }}</label>
                 <select name="permissions[]" id="permissions" class="form-select select2" multiple required>
                     @foreach ($permissions as $permission)
                         <option value="{{ $permission }}" {{ in_array($permission, old('permissions', [])) ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Simpan Role</button>
+            <button type="submit" class="btn btn-success">{{ __('role.save') }}</button>
         </form>
     </div>
 </div>

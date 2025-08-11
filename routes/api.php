@@ -12,13 +12,13 @@ Route::post('/login-api', [AuthenticationController::class, 'loginApi']);
 
 Route::get('/products', [ProductController::class, 'getProductListApi']);
 
-Route::middleware('auth:api')->get('/cart', function () {
-    $user = Auth::user();
-    return response()->json([
-        'success' => true,
-        'data' => $user->carts
-    ]);
+Route::middleware('auth:api')->group(function () {
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::put('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 });
+
 
 Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
 

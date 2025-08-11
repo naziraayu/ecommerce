@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-        <h3>Tambah Produk</h3>
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">Kembali</a>
+        <h3>{{ __('product.add') }}</h3>
+        <a href="{{ route('products.index') }}" class="btn btn-secondary">{{ __('product.cancel') }}</a>
     </div>
 
     @if (session('error'))
@@ -12,7 +12,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger">
-            <strong>Terjadi kesalahan!</strong>
+            <strong>{{ __('product.error occurred') }}</strong>
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -27,9 +27,9 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="category_id" class="form-label">Kategori</label>
+                    <label for="category_id" class="form-label">{{ __('product.category') }}</label>
                     <select name="category_id" class="form-select select2" required>
-                        <option value="">Pilih Kategori</option>
+                        <option value="">{{ __('product.select') }}</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
@@ -37,32 +37,32 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama Produk</label>
+                    <label for="name" class="form-label">{{ __('product.product name') }}</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label">Deskripsi</label>
+                    <label for="description" class="form-label">{{ __('product.product name') }}</label>
                     <textarea name="description" class="form-control" rows="3"></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label for="price" class="form-label">Harga</label>
+                    <label for="price" class="form-label">{{ __('product.price') }}</label>
                     <input type="number" step="0.01" name="price" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="stock" class="form-label">Stok</label>
+                    <label for="stock" class="form-label">{{ __('product.stock') }}</label>
                     <input type="number" name="stock" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="images" class="form-label">Gambar Produk</label>
+                    <label for="images" class="form-label">{{ __('product.images') }}</label>
                     <input type="file" name="images[]" class="form-control" multiple required>
-                    <small class="text-muted">Dapat mengupload lebih dari satu gambar</small>
+                    <small class="text-muted">{{ __('product.nb') }}</small>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary">{{ __('categories.save') }}</button>
             </form>
         </div>
     </div>

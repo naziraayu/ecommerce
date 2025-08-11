@@ -1,7 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2 class="mt-3">{{ __('admin.edit admin') }}</h2>
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3>{{ __('admin.edit admin') }}</h3>
+        <a href="{{ route('admins.index') }}" class="btn btn-secondary">{{ __('admin.cancel') }}</a>
+    </div>
 
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
