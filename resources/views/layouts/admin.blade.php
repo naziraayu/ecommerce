@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -10,9 +11,100 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"> -->
 </head>
+
+<!-- Tambahkan ini di bagian head atau sebelum closing body tag -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadNotifications();
+    
+    // Reload notifications setiap 30 detik
+    setInterval(loadNotifications, 30000);
+});
+
+function loadNotifications() {
+    fetch('{{ route("notifications.bellData") }}', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateNotificationBell(data);
+    })
+    .catch(error => {
+        console.error('Error loading notifications:', error);
+    });
+}
+
+function updateNotificationBell(data) {
+    // Update badge count
+    const badge = document.querySelector('.notification-badge');
+    if (badge) {
+        if (data.unread_count > 0) {
+            badge.textContent = data.unread_count;
+            badge.style.display = 'inline';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    
+    // Update dropdown content
+    const dropdownMenu = document.querySelector('#notificationDropdown');
+    if (dropdownMenu) {
+        let content = '';
+        
+        if (data.recent_notifications && data.recent_notifications.length > 0) {
+            content += '<h6 class="dropdown-header">Notifikasi Terbaru</h6>';
+            
+            data.recent_notifications.forEach(notification => {
+                let message = formatNotificationMessage(notification);
+                let readClass = notification.is_read ? '' : 'fw-bold';
+                
+                content += `
+                    <a class="dropdown-item ${readClass}" href="${notification.url}">
+                        <div class="small">${message}</div>
+                        <div class="text-muted small">${notification.created_at}</div>
+                    </a>
+                `;
+            });
+            
+            content += '<div class="dropdown-divider"></div>';
+            content += '<a class="dropdown-item text-center" href="{{ route("notifications.index") }}">Lihat Semua Notifikasi</a>';
+        } else {
+            content = '<div class="dropdown-item-text">Tidak ada notifikasi</div>';
+        }
+        
+        dropdownMenu.innerHTML = content;
+    }
+}
+
+function formatNotificationMessage(notification) {
+    if (!notification.data) {
+        return 'Notifikasi baru';
+    }
+    
+    switch (notification.type) {
+        case 'App\\Notifications\\NewUserRegistered':
+            return `Pengguna baru terdaftar: ${notification.data.name || 'Unknown User'}`;
+            
+        case 'App\\Notifications\\NewOrder':
+            return `Pesanan baru: #${notification.data.order_id || 'Unknown'}`;
+            
+        case 'App\\Notifications\\OrderStatusChanged':
+            return `Pesanan #${notification.data.order_id || 'Unknown'} status berubah menjadi ${notification.data.status || 'Unknown Status'}`;
+            
+        default:
+            return notification.data.message || 'Notifikasi baru';
+    }
+}
+</script>
+
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -144,6 +236,7 @@
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script> -->
     
     <script>

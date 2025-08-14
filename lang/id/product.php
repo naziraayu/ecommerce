@@ -28,5 +28,11 @@ return [
     'delete' => 'Hapus',
     'new image'=> 'Gambar Baru (Opsional)',
     'ignore' => 'Abaikan jika tidak ingin menambah gambar baru.',
+    'download template' => 'Download Template',
+    'delete confirmation' => 'Apakah Anda yakin ingin menghapus produk ini?',
+    'product details' => 'Detail Produk',
+    'created' => 'Ditambahkan pada',
+    'updated' => 'Diperbarui pada',
+    'back to list' => 'Kembali ke Daftar Produk',
 
 ];

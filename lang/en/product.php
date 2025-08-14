@@ -28,5 +28,11 @@ return [
     'delete' => 'Delete',
     'new image'=> 'New Image (Optional)',
     'ignore' => 'Ignore if you dont want to add a new image',
+    'download template' => 'Download Template',
+    'delete confirmation' => 'Are you sure you want to delete this product?',
+    'product details' => 'Product Details',
+    'created' => 'Added on',
+    'updated' => 'Updated on',
+    'back to list' => 'Back to Product List',
 
 ];

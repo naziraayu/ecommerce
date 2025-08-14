@@ -7,34 +7,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = ['name', 'email', 'password', 'role', 'role_id', 'address', 'phone_number'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'role_id',
+        'address',
+        'phone_number'
+    ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -43,19 +37,38 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function roleData()
+    // ===== RELATIONS =====
+
+    public function roleData(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function carts()
+    public function carts(): HasMany
     {
         return $this->hasMany(Cart::class, 'user_id', 'id');
+    }
+    
+    // ===== ROLE HELPERS =====
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin' || $this->roleData?->name === 'admin';
+    }
+
+    // public function isSuperAdmin(): bool
+    // {
+    //     return $this->role === 'super_admin' || $this->roleData?->name === 'super_admin';
+    // }
+
+    public function getRoleNameAttribute(): string
+    {
+        return $this->roleData?->name ?? $this->role ?? 'user';
     }
 
 }

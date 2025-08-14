@@ -12,12 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
+use App\Notifications\NewUserRegistered;
+use Illuminate\Support\Facades\Notification;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
@@ -32,12 +31,15 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email:filter', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'address' => 'nullable|string',
             'phone_number' => 'nullable|string',
-            'role_id' => 'nullable|integer',
+            // 'role_id' => 'nullable|integer',
         ]);
+
+        // Ambil role admin dari tabel roles
+        $adminRole = Role::where('name', 'admin')->firstOrFail();
 
         $user = User::create([
             'name' => $request->name,
@@ -45,20 +47,23 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'address' => $request->address,
             'phone_number' => $request->phone_number,
-            'role_id' => $request->role_id,
-            'role' => 'admin',
+            'role_id'      => $adminRole->id,
         ]);
 
-        // Ambil role admin dari tabel roles
-        $adminRole = Role::where('name', 'admin')->first();
+        // Ambil semua admin lain untuk dikirimi notifikasi
+        $otherAdmins = User::where('role_id', $adminRole->id)
+            ->where('id', '!=', $user->id)
+            ->get();
 
-        if ($adminRole) {
-            $user->role_id = $adminRole->id;
-            $user->save();
+        // Kirim notifikasi ke admin lain
+        if ($otherAdmins->isNotEmpty()) {
+            Notification::send($otherAdmins, new NewUserRegistered($user));
         }
 
+        // Login otomatis setelah registrasi
         Auth::login($user);
 
+        // Arahkan ke halaman verifikasi email
         return redirect()->route('verification.notice');
     }
 }

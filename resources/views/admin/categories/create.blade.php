@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label"> #products-table</label>
+                    <label for="description" class="form-label"> {{ __('categories.description') }}</label>
                     <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                 </div>
 

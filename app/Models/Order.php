@@ -15,16 +15,21 @@ class Order extends Model
         'transaction_id', 
         'midtrans_transaction_id',
         'midtrans_response',
-        'paid_at',];
+        'snap_token',
+        'paid_at'
+    ];
 
     protected $casts = [
+        'total_price' => 'decimal:2',
         'midtrans_response' => 'array',
         'paid_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function items()
@@ -46,5 +51,15 @@ class Order extends Model
     public function isFailed()
     {
         return in_array($this->payment_status, ['failed', 'cancelled', 'expired']);
+    }
+
+    public function isCompleted()
+    {
+        return $this->status === 'completed';
+    }
+
+    public function isCancelled()
+    {
+        return $this->status === 'cancelled';
     }
 }

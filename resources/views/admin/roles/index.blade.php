@@ -52,12 +52,38 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        $('#roles-table').DataTable({
+    let table;
+
+    function initDataTable(lang) {
+        // kalau table sudah ada, destroy dulu
+        if ($.fn.DataTable.isDataTable('#roles-table')) {
+            $('#roles-table').DataTable().destroy();
+        }
+
+        let langUrl = (lang === 'id') 
+            ? "{{ secure_asset('assets/indonesia.json') }}" 
+            : "{{ secure_asset('assets/english.json') }}";
+
+        table = $('#roles-table').DataTable({
+            processing: true,
+            serverSide: false,
             language: {
-                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+                url: langUrl
             }
+        });
+    }
+
+    $(document).ready(function () {
+        // inisialisasi pertama sesuai locale Laravel
+        let lang = "{{ app()->getLocale() }}";
+        initDataTable(lang);
+
+        // contoh: kalau user ganti bahasa (misal pakai select)
+        $('#languageSelect').change(function() {
+            let newLang = $(this).val();
+            initDataTable(newLang);
         });
     });
 </script>
+
 @endpush

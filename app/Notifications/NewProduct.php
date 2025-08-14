@@ -10,8 +10,10 @@ use Illuminate\Notifications\Notification;
 class NewProduct extends Notification
 {
     use Queueable;
+    
     protected $product;
     protected $ccEmails;
+
     /**
      * Create a new notification instance.
      */
@@ -23,17 +25,26 @@ class NewProduct extends Notification
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['database']; // Hanya database, tidak email
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Get the array representation of the notification.
      */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            'product_id' => $this->product->id,
+            'name' => $this->product->name,
+            'message' => 'Produk baru ditambahkan: ' . $this->product->name,
+        ];
+    }
+
+    // Method toMail() bisa dihapus atau di-comment karena tidak digunakan
+    /*
     public function toMail(object $notifiable): MailMessage
     {
         $mail = (new MailMessage)
@@ -48,17 +59,5 @@ class NewProduct extends Notification
 
         return $mail;
     }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'message' => 'New product added: ' . $this->product->name,
-            'product_id' => $this->product->id,
-        ];
-    }
+    */
 }

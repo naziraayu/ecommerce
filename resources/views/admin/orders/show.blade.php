@@ -12,7 +12,7 @@
     </div>
 
     <h4>{{ __('order.Order Items') }}</h4>
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body">
             <table id="itemsTable" class="table table-bordered table-hover">
                 <thead class="table-light">
@@ -35,6 +35,19 @@
         </div>
     </div>
 
+    {{-- Detail Pembayaran --}}
+    <h4>{{ __('order.payment details') }}</h4>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>{{ __('order.payment status') }} :</strong> {{ ucfirst($order->payment_status) }}</p>
+            <p><strong>{{ __('order.payment type') }} :</strong> {{ ucfirst($order->payment_type ?? '-') }}</p>
+            <p><strong>{{ __('order.Transaction ID') }} :</strong> {{ $order->midtrans_transaction_id ?? '-' }}</p>
+            <p><strong>{{ __('order.paid at') }} :</strong> 
+                {{ $order->paid_at ? $order->paid_at->format('d M Y H:i') : '-' }}
+            </p>
+        </div>
+    </div>
+
     <a href="{{ route('orders.index') }}" class="btn btn-secondary mt-3">
         {{ __('order.back to list') }}
     </a>
@@ -43,16 +56,38 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        $('#itemsTable').DataTable({
-            paging: false,
-            searching: false,
-            ordering: false,
-            info: false,
+    let table;
+
+    function initDataTable(lang) {
+        // kalau table sudah ada, destroy dulu
+        if ($.fn.DataTable.isDataTable('#itemsTable')) {
+            $('#itemsTable').DataTable().destroy();
+        }
+
+        let langUrl = (lang === 'id') 
+            ? "{{ secure_asset('assets/indonesia.json') }}" 
+            : "{{ secure_asset('assets/english.json') }}";
+
+        table = $('#itemsTable').DataTable({
+            processing: true,
+            serverSide: false,
             language: {
-                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+                url: langUrl
             }
+        });
+    }
+
+    $(document).ready(function () {
+        // inisialisasi pertama sesuai locale Laravel
+        let lang = "{{ app()->getLocale() }}";
+        initDataTable(lang);
+
+        // contoh: kalau user ganti bahasa (misal pakai select)
+        $('#languageSelect').change(function() {
+            let newLang = $(this).val();
+            initDataTable(newLang);
         });
     });
 </script>
+
 @endpush

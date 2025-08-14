@@ -24,34 +24,16 @@ public function run(): void
         // 5 Data dummy user
         $users = [
             [
-                'name' => 'Budi Santoso',
-                'email' => 'budi@example.com',
+                'name' => 'Ananta Ghaisani',
+                'email' => 'aylanazefanya@gmail.com',
                 'address' => 'Jl. Melati No. 10',
                 'phone_number' => '08111111111',
             ],
             [
-                'name' => 'Siti Aminah',
-                'email' => 'siti@example.com',
+                'name' => 'Gabriela',
+                'email' => 'hanayori2000@gmail.com',
                 'address' => 'Jl. Kenanga No. 23',
                 'phone_number' => '08222222222',
-            ],
-            [
-                'name' => 'Rudi Hartono',
-                'email' => 'rudi@example.com',
-                'address' => 'Jl. Mawar No. 5',
-                'phone_number' => '08333333333',
-            ],
-            [
-                'name' => 'Dewi Lestari',
-                'email' => 'dewi@example.com',
-                'address' => 'Jl. Anggrek No. 15',
-                'phone_number' => '08444444444',
-            ],
-            [
-                'name' => 'Agus Pratama',
-                'email' => 'agus@example.com',
-                'address' => 'Jl. Dahlia No. 3',
-                'phone_number' => '08555555555',
             ],
         ];
 

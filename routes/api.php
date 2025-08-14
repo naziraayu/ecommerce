@@ -5,10 +5,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthenticationController;
 
 Route::post('/login-api', [AuthenticationController::class, 'loginApi']);
+Route::post('/register-api', [AuthenticationController::class, 'registerApi']);
 
 Route::get('/products', [ProductController::class, 'getProductListApi']);
 
@@ -19,6 +21,10 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 });
 
+Route::middleware('auth:api')->group(function () {
+    Route::get('/orders', [OrderController::class, 'apiIndex']);
+    Route::get('/orders/{id}', [OrderController::class, 'apiShow']);
+    Route::post('/checkout', [OrderController::class, 'checkout']);
+});
 
-Route::middleware('auth:api')->post('/checkout', [OrderController::class, 'checkout']);
-
+Route::post('/payment/callback', [PaymentController::class, 'callback']);

@@ -17,18 +17,17 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         // Ambil user yang sudah ada (misal ID 9 & 10)
-        $user1 = User::find(4);
-        $user2 = User::find(5);
+        $user1 = User::find(7);
 
         // Ambil produk yang sudah ada (misal ID 1 & 2)
-        $product1 = Product::find(5);
-        $product2 = Product::find(6);
+        $product1 = Product::find(3);
+        $product2 = Product::find(4);
 
         // Buat order pertama
         $order1 = Order::create([
             'user_id' => $user1->id,
             'total_price' => 2 * $product1->price + 1 * $product2->price,
-            'status' => 'completed',
+            'status' => 'pending',
         ]);
 
         OrderItem::create([
@@ -45,18 +44,5 @@ class OrderSeeder extends Seeder
             'price' => $product2->price,
         ]);
 
-        // Buat order kedua
-        $order2 = Order::create([
-            'user_id' => $user2->id,
-            'total_price' => 3 * $product2->price,
-            'status' => 'pending',
-        ]);
-
-        OrderItem::create([
-            'order_id' => $order2->id,
-            'product_id' => $product2->id,
-            'quantity' => 3,
-            'price' => $product2->price,
-        ]);
     }
 }

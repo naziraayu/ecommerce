@@ -29,5 +29,17 @@
                 </ul>
             </div>
         </div>
+        <!-- Bell Notifikasi -->
+        <div class="dropdown me-3">
+            <button class="btn btn-link text-decoration-none position-relative" type="button" id="notificationButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell fs-5"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" style="display: none;">
+                    0
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationButton" id="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                <li><div class="dropdown-item-text">Memuat notifikasi...</div></li>
+            </ul>
+        </div>
     </div>
 </nav>

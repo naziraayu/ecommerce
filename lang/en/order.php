@@ -4,7 +4,7 @@ return [
 
     'list orders' => 'List Orders',
     'export' => 'Export Orders',
-    'user' => 'User',
+    'user' => 'Name',
     'total price' => 'Total Price',
     'actions' => 'Actions',
     'order detail' => 'Order Detail',
@@ -20,5 +20,10 @@ return [
     'Quantity' => 'Quantity',
     'Price' => 'Price',
     'back to list' => 'Back to List',
+    'status'=> 'Status',
+    'order date'=> 'Order Date',
+    'payment status' => 'Payment Status',
+    'paid at' => 'Paid At',
+    'payment type' => 'Payment Type',
 
 ];

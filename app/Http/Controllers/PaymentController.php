@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use Midtrans\Config;
+use Midtrans\Snap;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -18,53 +20,64 @@ class PaymentController extends Controller
         $this->midtransService = $midtransService;
     }
 
-    public function show(Order $order)
+    public function show($id)
     {
-        // Pastikan user hanya bisa akses order miliknya
-        if (Auth::id() !== $order->user_id) {
-            abort(403);
-        }
+        $order = Order::findOrFail($id);
 
-        // Generate transaction ID jika belum ada
-        if (!$order->transaction_id) {
-            $order->transaction_id = 'ORDER-' . $order->id . '-' . time();
+        // Kalau order belum ada snap_token, generate dulu
+        if (!$order->snap_token) {
+            Config::$serverKey = config('midtrans.server_key');
+            Config::$isProduction = false;
+            Config::$isSanitized = true;
+            Config::$is3ds = true;
+
+            $params = [
+                'transaction_details' => [
+                    'order_id' => 'ORDER-' . $order->id . '-' . time(), // Tambahkan timestamp untuk uniqueness
+                    'gross_amount' => (int)$order->total_price, // Cast ke integer
+                ],
+                'customer_details' => [
+                    'first_name' => $order->user->name,
+                    'email' => $order->user->email,
+                ],
+            ];
+
+            $snapToken = Snap::getSnapToken($params);
+            $order->snap_token = $snapToken;
+            $order->midtrans_transaction_id = $params['transaction_details']['order_id']; // Simpan transaction ID
             $order->save();
+        } else {
+            $snapToken = $order->snap_token;
         }
 
-        // Buat snap token jika order masih pending
-        $snapToken = null;
-        if ($order->payment_status === 'pending') {
-            $result = $this->midtransService->createTransaction($order);
-            
-            if ($result['success']) {
-                $snapToken = $result['snap_token'];
-            } else {
-                return back()->with('error', 'Failed to create payment: ' . $result['message']);
-            }
-        }
-
-        return view('payment.show', compact('order', 'snapToken'));
+        return view('admin.payment.show', compact('order', 'snapToken'));
     }
 
     public function callback(Request $request)
     {
         try {
+            Log::info('Midtrans callback received', $request->all()); // Log untuk debugging
+            
             DB::beginTransaction();
             
-            $result = $this->midtransService->handleNotification();
+            $result = $this->midtransService->handleNotification($request);
             
             if ($result['success']) {
                 DB::commit();
+                Log::info('Midtrans callback processed successfully', ['order_id' => $result['order_id'] ?? null]);
                 return response()->json(['status' => 'success']);
             } else {
                 DB::rollback();
                 Log::error('Midtrans callback failed: ' . $result['message']);
-                return response()->json(['status' => 'error'], 400);
+                return response()->json(['status' => 'error', 'message' => $result['message']], 400);
             }
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Midtrans callback exception: ' . $e->getMessage());
-            return response()->json(['status' => 'error'], 500);
+            Log::error('Midtrans callback exception: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            return response()->json(['status' => 'error', 'message' => 'Internal server error'], 500);
         }
     }
 

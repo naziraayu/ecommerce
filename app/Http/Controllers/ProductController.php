@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\Category;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
+use Yajra\DataTables\DataTables;
 use App\Notifications\NewProduct;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification; // Tambah ini
 
 class ProductController extends Controller
 {
@@ -29,6 +30,13 @@ class ProductController extends Controller
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
+
+    public function show($id)
+    {
+        $product = Product::with(['category', 'images'])->findOrFail($id);
+        return view('admin.products.show', compact('product'));
+    }
+
 
     public function store(Request $request)
     {
@@ -64,16 +72,20 @@ class ProductController extends Controller
             }
         }
 
+        // Kirim notifikasi ke semua admin
+        $admins = User::where('role', 'admin')->get();
+        if ($admins->count() > 0) {
+            Notification::send($admins, new NewProduct($product));
+        }
+
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
-
 
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
-
 
     public function update(Request $request, $id)
     {
@@ -154,5 +166,25 @@ class ProductController extends Controller
         ]);
     }
 
+    public function export() 
+    {
+        return Excel::download(new ProductExport, 'products.xlsx');
+    }
 
+    public function import(Request $request) 
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+        
+        Excel::import(new ProductImport, $request->file('file'));
+        
+        return redirect()->back()->with('success', 'Products imported successfully.');
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/product-template.xlsx');
+        return response()->download($path);
+    }
 }

@@ -28,27 +28,27 @@ class NewOrder extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
-    {
-        $mail = (new MailMessage)
-            ->subject('New Order Received')
-            ->line('A new order has been placed.')
-            ->action('View Order', route('orders.show', $this->order->id))
-            ->line('Thank you for using our application!')
-            ->salutation('Admin, Ecommerce');
+    // public function toMail(object $notifiable): MailMessage
+    // {
+    //     $mail = (new MailMessage)
+    //         ->subject('New Order Received')
+    //         ->line('A new order has been placed.')
+    //         ->action('View Order', route('orders.show', $this->order->id))
+    //         ->line('Thank you for using our application!')
+    //         ->salutation('Admin, Ecommerce');
 
-        if (!empty($this->ccEmails)) {
-            $mail->cc($this->ccEmails);
-        }
+    //     if (!empty($this->ccEmails)) {
+    //         $mail->cc($this->ccEmails);
+    //     }
     
-        return $mail;
-    }
+    //     return $mail;
+    // }
 
     /**
      * Get the array representation of the notification.
@@ -58,8 +58,11 @@ class NewOrder extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'title'   => 'New Order',
             'message' => 'New order received: Order #' . $this->order->id,
             'order_id' => $this->order->id,
+            'name' => $this->order->user->name,
+            'icon'    => 'fas fa-shopping-cart',
         ];
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Order;
 use App\Exports\CategoriesExport;
 use App\Imports\CategoriesImport;
+use App\Services\MidtransService;
 use Illuminate\Support\Facades\App;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +60,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Product Images
     Route::delete('/product-images/{id}', [ProductImageController::class, 'destroy'])->name('product-images.destroy');
+    
+    // Products
+    Route::get('/download/product-template', function () {
+        $file = public_path('templates/product_template.xlsx');
+        if (file_exists($file)) {
+            return response()->download($file);
+        }
+        abort(404);
+    })->name('product.downloadTemplate');
+    Route::get('/product/export', [ProductController::class, 'export'])->name('product.export');
+    Route::post('/product/import', [ProductController::class, 'import'])->name('product.import');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
     // Users
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -76,9 +90,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Orders
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{order}', [OrderController::class, 'show']);
+    Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
+    Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('orders/{id}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
-    Route::get('/export/order', [OrderController::class, 'export'])->name('export.order');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
 
     // Settings
     Route::get('settings', [AuthenticationController::class, 'settingView'])->name('settings.index');
@@ -86,9 +102,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Payment
     Route::get('/payment/{order}', [PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
     Route::get('/payment/{order}/success', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/{order}/failed', [PaymentController::class, 'failed'])->name('payment.failed');
-    Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
     // Cart
     Route::get('/cart', [CartController::class, 'index']);
@@ -99,8 +115,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+    Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
-
+    Route::get('/notifications/redirect/{id}', [NotificationController::class, 'redirect'])
+    ->name('notifications.redirect');
+    
+    // AJAX routes for notifications
+    Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/notifications-bell-data', [NotificationController::class, 'getBellData'])->name('notifications.bellData');
 
     // =============================
     // 🛡️ SUPERADMIN ONLY
@@ -121,6 +143,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // =============================
 // 🌐 Language Switcher
 // =============================
+Route::get('/payment/{id}', [PaymentController::class, 'show'])->name('payment.show');
+// routes/web.php
 
 Route::get('/set-language/{lang}', function ($lang) {
     Session::put('locale', $lang);

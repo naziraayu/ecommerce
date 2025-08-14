@@ -46,6 +46,7 @@
                                 @endif
                             </td>
                             <td>
+                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
@@ -60,15 +61,47 @@
             </table>
         </div>
     </div>
+
+    {{-- Tombol Ekspor & Impor --}}
+    <a href="{{ route('product.export') }}" class="btn btn-success mt-3">{{ __('product.export') }}</a>
+    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#importModal">{{ __('product.import') }}</button>
+    <a href="{{ route('product.downloadTemplate') }}" class="btn btn-link mt-3">{{ __('product.download template') }}</a>
+
+    <!-- Modal Import -->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">{{ __('product.import') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('product.cancel') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('product.import') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
 <script>
     $(document).ready(function () {
         $('#products-table').DataTable({
+            processing: true,
+            serverSide: false,
             language: {
-                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
-            },
+                url: "{{ secure_asset('assets/indonesia.json') }}"
+            }
             scrollX: true
         });
     });

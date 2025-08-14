@@ -39,8 +39,10 @@
 <script>
     $(document).ready(function () {
         $('#userTable').DataTable({
+            processing: true,
+            serverSide: false,
             language: {
-                url: "{{ asset(App::getLocale() === 'id' ? 'assets/indonesia.json' : 'assets/english.json') }}"
+                url: "{{ secure_asset('assets/indonesia.json') }}"
             }
         });
     });

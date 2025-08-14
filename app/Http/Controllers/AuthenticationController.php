@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\NewUserRegistered;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 
 class AuthenticationController extends Controller
 {
@@ -70,6 +73,51 @@ class AuthenticationController extends Controller
             'success' => false,
             'message' => 'Email atau password salah',
         ], 401);
+    }
+
+    public function registerApi(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'address' => 'nullable|string',
+            'phone_number' => 'nullable|string',
+        ]);
+
+        // Ambil role user (case-insensitive)
+        $userRole = Role::whereRaw('LOWER(name) = ?', ['user'])->firstOrFail();
+
+        // Buat user baru
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'address' => $request->address,
+            'phone_number' => $request->phone_number,
+            'role_id' => $userRole->id,
+        ]);
+
+        // Ambil id role admin & superadmin (case-insensitive)
+        $adminRoleId = Role::whereRaw('LOWER(name) = ?', ['admin'])->value('id');
+        $superAdminRoleId = Role::whereRaw('LOWER(name) = ?', ['superadmin'])->value('id');
+
+        // Gabungkan role yang ditemukan
+        $roleIds = array_filter([$adminRoleId, $superAdminRoleId]);
+
+        if (!empty($roleIds)) {
+            // Ambil semua user dengan role admin/superadmin
+            $recipients = User::whereIn('role_id', $roleIds)->get();
+
+            if ($recipients->isNotEmpty()) {
+                Notification::send($recipients, new NewUserRegistered($user));
+            }
+        }
+
+        return response()->json([
+            'message' => 'Registrasi berhasil',
+            'user' => $user
+        ]);
     }
 
 
