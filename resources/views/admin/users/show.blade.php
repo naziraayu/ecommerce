@@ -46,13 +46,36 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        $('#orders-table').DataTable({
+    let table;
+
+    function initDataTable(lang) {
+        // kalau table sudah ada, destroy dulu
+        if ($.fn.DataTable.isDataTable('#orders-table')) {
+            $('#orders-table').DataTable().destroy();
+        }
+
+        let langUrl = (lang === 'id') 
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
+
+        table = $('#orders-table').DataTable({
             processing: true,
             serverSide: false,
             language: {
-                url: "{{ secure_asset('assets/indonesia.json') }}"
+                url: langUrl
             }
+        });
+    }
+
+    $(document).ready(function () {
+        // inisialisasi pertama sesuai locale Laravel
+        let lang = "{{ app()->getLocale() }}";
+        initDataTable(lang);
+
+        // contoh: kalau user ganti bahasa (misal pakai select)
+        $('#languageSelect').change(function() {
+            let newLang = $(this).val();
+            initDataTable(newLang);
         });
     });
 </script>

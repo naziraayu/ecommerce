@@ -64,9 +64,9 @@
             $('#itemsTable').DataTable().destroy();
         }
 
-        let langUrl = (lang === 'id') 
-            ? "{{ secure_asset('assets/indonesia.json') }}" 
-            : "{{ secure_asset('assets/english.json') }}";
+       let langUrl = (lang === 'id') 
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
 
         table = $('#itemsTable').DataTable({
             processing: true,

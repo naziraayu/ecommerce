@@ -210,8 +210,9 @@ function formatNotificationMessage(notification) {
 
                         {{-- Logout: semua user bisa --}}
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('logout*') ? 'active' : '' }}" 
-                            href="#" onclick="event.preventDefault(); if(confirm('Apakah anda yakin ingin logout?')) { document.getElementById('logout-form').submit(); }">
+                            <a class="nav-link d-flex align-items-center text-black" 
+                            href="#" 
+                            onclick="event.preventDefault(); logoutConfirm();">
                                 <img src="{{ asset('assets/logout.svg') }}" alt="Logout" style="width: 20px; height: 20px; margin-right: 5px;">
                                 {{ __('sidebar.logout') }}
                             </a>
@@ -254,7 +255,26 @@ function formatNotificationMessage(notification) {
             }
         });
 
-        </script>
-        @stack('scripts')
+    </script>
+    @stack('scripts')
+    <script>
+        function logoutConfirm() {
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Anda akan keluar dari sistem!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>

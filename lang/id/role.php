@@ -18,4 +18,6 @@ return [
     'error' => 'Terjadi kesalahan!',
     'placeholder_role' => 'Contoh: superadmin',
     'placeholder_permissions' => 'Pilih permission...',
+    'delete_success' => 'Role berhasil dihapus.',
+    'yes_delete' => 'Ya, hapus role ini',
 ];

@@ -48,11 +48,10 @@
                             <td>
                                 <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-btn">Hapus</button>
                                 </form>
                             </td>
                         </tr>
@@ -95,15 +94,72 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        $('#products-table').DataTable({
+    let table;
+
+    function initDataTable(lang) {
+        // kalau table sudah ada, destroy dulu
+        if ($.fn.DataTable.isDataTable('#products-table')) {
+            $('#products-table').DataTable().destroy();
+        }
+
+        let langUrl = (lang === 'id') 
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
+
+        table = $('#products-table').DataTable({
             processing: true,
             serverSide: false,
             language: {
-                url: "{{ secure_asset('assets/indonesia.json') }}"
+                url: langUrl
             }
-            scrollX: true
         });
+    }
+
+    $(document).ready(function () {
+        // inisialisasi pertama sesuai locale Laravel
+        let lang = "{{ app()->getLocale() }}";
+        initDataTable(lang);
+
+        // contoh: kalau user ganti bahasa (misal pakai select)
+        $('#languageSelect').change(function() {
+            let newLang = $(this).val();
+            initDataTable(newLang);
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Hapus produk pakai SweetAlert2
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Yakin hapus produk?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Notifikasi sukses dari session (opsional)
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
     });
 </script>
 @endpush

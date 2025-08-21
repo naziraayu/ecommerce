@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Notification; // Tambah ini
+use Illuminate\Support\Facades\Notification;
 
 class ProductController extends Controller
 {
@@ -36,7 +36,6 @@ class ProductController extends Controller
         $product = Product::with(['category', 'images'])->findOrFail($id);
         return view('admin.products.show', compact('product'));
     }
-
 
     public function store(Request $request)
     {
@@ -72,10 +71,16 @@ class ProductController extends Controller
             }
         }
 
-        // Kirim notifikasi ke semua admin
-        $admins = User::where('role', 'admin')->get();
-        if ($admins->count() > 0) {
-            Notification::send($admins, new NewProduct($product));
+        // Load relasi yang diperlukan
+        $product->load('category');
+
+        // Kirim notifikasi ke semua admin & superadmin
+        $admins = User::whereHas('roleData', function($q) {
+            $q->whereIn('name', ['admin', 'superadmin']);
+        })->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new NewProduct($product));
         }
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -112,7 +117,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-   public function destroy($id)
+    public function destroy($id)
     {
         $product = Product::findOrFail($id);
 

@@ -50,14 +50,14 @@ class RegisteredUserController extends Controller
             'role_id'      => $adminRole->id,
         ]);
 
-        // Ambil semua admin lain untuk dikirimi notifikasi
-        $otherAdmins = User::where('role_id', $adminRole->id)
-            ->where('id', '!=', $user->id)
-            ->get();
+        // MENJADI:
+        $admins = User::whereHas('roleData', function($q) {
+            $q->whereIn('name', ['admin', 'superadmin']);
+        })->where('id', '!=', $user->id)
+        ->get();
 
-        // Kirim notifikasi ke admin lain
-        if ($otherAdmins->isNotEmpty()) {
-            Notification::send($otherAdmins, new NewUserRegistered($user));
+        foreach ($admins as $admin) {
+            $admin->notify(new NewUserRegistered($user));
         }
 
         // Login otomatis setelah registrasi

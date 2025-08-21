@@ -17,5 +17,9 @@ return [
     'NewOrder' => 'New Order Placed',
     'Order' => 'Order',
     'StatusChangedTo' => 'Status Changed To',
+    'ConfirmDelete'=> 'Are you sure you want to delete this notification?',
+    'DeleteAll' => 'Delete All',
+    'ConfirmDeleteAll' => 'Are you sure you want to delete all notifications?',
+
 
 ]; 

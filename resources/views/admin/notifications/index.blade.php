@@ -18,7 +18,6 @@
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
-            </ul>
         </div>
     @endif
 
@@ -42,16 +41,28 @@
         </button>
     </form>
 
-    {{-- Tombol Mark All as Read --}}
+    {{-- Tombol Mark All as Read & Delete All --}}
     @if ($notifications->count() > 0)
-        <form action="{{ route('notifications.markAllAsRead') }}" method="POST" class="mb-3">
-            @csrf
-            @method('PATCH')
-            <button type="submit" class="btn btn-success btn-sm">
-                {{ __('notification.markAllAsRead') }}
-            </button>
-        </form>
+        <div class="d-flex gap-2 mb-3">
+            <form action="{{ route('notifications.markAllAsRead') }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="btn btn-success btn-sm">
+                    {{ __('notification.markAllAsRead') }}
+                </button>
+            </form>
+
+            <form action="{{ route('notifications.destroyAll') }}" method="POST"
+                onsubmit="return confirm('{{ __('notification.ConfirmDeleteAll') }}')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i> {{ __('notification.DeleteAll') }}
+                </button>
+            </form>
+        </div>
     @endif
+
 
     {{-- List Notifikasi --}}
     @if ($notifications->count())

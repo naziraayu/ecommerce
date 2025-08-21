@@ -71,7 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('product.downloadTemplate');
     Route::get('/product/export', [ProductController::class, 'export'])->name('product.export');
     Route::post('/product/import', [ProductController::class, 'import'])->name('product.import');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
+    Route::resource('product', ProductController::class);
 
     // Users
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -95,10 +96,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('orders/{id}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
-
     // Settings
     Route::get('settings', [AuthenticationController::class, 'settingView'])->name('settings.index');
     Route::post('settings/email', [AuthenticationController::class, 'emailChange'])->name('settings.store');
+    Route::post('settings/check-email', [AuthenticationController::class, 'checkEmail'])->name('settings.checkEmail');
+    Route::post('settings/send-verification', [AuthenticationController::class, 'sendVerification'])->name('settings.sendVerification');
+    Route::get('settings/confirm-email/{user}', [AuthenticationController::class, 'confirmEmailChange'])
+        ->name('settings.confirmEmailChange')
+        ->middleware('signed');
 
     // Payment
     Route::get('/payment/{order}', [PaymentController::class, 'show'])->name('payment.show');
@@ -119,6 +124,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/notifications/redirect/{id}', [NotificationController::class, 'redirect'])
     ->name('notifications.redirect');
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll'])
+    ->name('notifications.destroyAll');
+
     
     // AJAX routes for notifications
     Route::patch('/notifications/{id}/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');

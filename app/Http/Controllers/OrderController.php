@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Exports\OrderExport;
+use App\Events\NewOrderCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -163,7 +164,8 @@ class OrderController extends Controller
         $order->save();
 
         // Kirim notifikasi ke user pemilik order
-        Notification::send($order->user, new OrderStatusChanged($order, $oldStatus, $request->status));
+        Notification::send($order->user, new OrderStatusChanged($order, $oldStatus));
+
 
         return response()->json([
             'success' => true,
@@ -171,5 +173,4 @@ class OrderController extends Controller
             'new_status' => $order->status
         ]);
     }
-
 }

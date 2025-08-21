@@ -84,8 +84,8 @@
         }
 
         let langUrl = (lang === 'id') 
-            ? "{{ secure_asset('assets/indonesia.json') }}" 
-            : "{{ secure_asset('assets/english.json') }}";
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
 
         table = $('#table').DataTable({
             processing: true,

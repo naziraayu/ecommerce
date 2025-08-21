@@ -17,5 +17,9 @@ return [
     'NewOrder' => 'Pesanan Baru Ditempatkan',
     'Order' => 'Pesanan',
     'StatusChangedTo' => 'Status Diubah Menjadi',
+    'ConfirmDelete'=> 'Apakah Anda yakin ingin menghapus notifikasi ini?',
+    'DeleteAll' => 'Hapus Semua',
+    'ConfirmDeleteAll' => 'Yakin ingin menghapus semua notifikasi?',
+
 
 ]; 

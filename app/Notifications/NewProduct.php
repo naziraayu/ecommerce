@@ -3,9 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NewProduct extends Notification
 {
@@ -25,6 +24,8 @@ class NewProduct extends Notification
 
     /**
      * Get the notification's delivery channels.
+
+
      */
     public function via(object $notifiable): array
     {

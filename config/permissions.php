@@ -8,5 +8,4 @@ return [
     'manage_orders',
     'manage_settings',
     'access_profile',
-    'view_reports',
 ];

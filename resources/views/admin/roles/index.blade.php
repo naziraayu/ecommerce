@@ -35,11 +35,13 @@
                             </td>
                             <td>
                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-warning">{{ __('role.edit') }}</a>
-                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm{{ __('role.confirm_delete') }};">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteRole({{ $role->id }})">
+                                    {{ __('role.delete') }}
+                                </button>
+
+                                <form id="delete-form-{{ $role->id }}" action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:none;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger" type="submit">{{ __('role.delete') }}</button>
                                 </form>
                             </td>
                         </tr>
@@ -61,8 +63,8 @@
         }
 
         let langUrl = (lang === 'id') 
-            ? "{{ secure_asset('assets/indonesia.json') }}" 
-            : "{{ secure_asset('assets/english.json') }}";
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
 
         table = $('#roles-table').DataTable({
             processing: true,
@@ -84,6 +86,34 @@
             initDataTable(newLang);
         });
     });
+</script>
+<script>
+    function deleteRole(id) {
+        Swal.fire({
+            title: "{{ __('role.confirm_delete') ?? 'Yakin?' }}",
+            text: "{{ __('role.confirm_delete') ?? 'Role ini akan dihapus permanen!' }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: "{{ __('role.yes_delete') ?? 'Ya, hapus!' }}",
+            cancelButtonText: "{{ __('role.cancel') ?? 'Batal' }}"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+        // Notifikasi sukses dari session (opsional)
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
+    }
 </script>
 
 @endpush

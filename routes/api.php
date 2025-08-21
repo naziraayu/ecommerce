@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuthenticationController;
 
 Route::post('/login-api', [AuthenticationController::class, 'loginApi']);
@@ -28,3 +29,18 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::post('/payment/callback', [PaymentController::class, 'callback']);
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/notifications/check', [NotificationController::class, 'checkNew']);
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'apiIndex']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'apiMarkAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'apiDestroy']);
+});
+
+Route::prefix('buyer/password')->group(function () {
+    Route::post('/request', [AuthenticationController::class, 'requestResetCode']);
+    Route::post('/reset', [AuthenticationController::class, 'resetPasswordWithCode']);
+});

@@ -22,4 +22,9 @@ class UserController extends Controller
         $user = User::with(['roleData', 'orders'])->findOrFail($id); // pastikan relasi roleData & orders ada
         return view('admin.users.show', compact('user'));
     }
+
+    public function export() 
+    {
+        return Excel::download(new UserExport, 'daftar_user.xlsx');
+    }
 }

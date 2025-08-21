@@ -48,10 +48,10 @@
                         </td>
                         <td>
                             <a href="{{ route('admins.edit', $admin->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form action="{{ route('admins.destroy', $admin->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus admin ini?')">
+                            <form action="{{ route('admins.destroy', $admin->id) }}" method="POST" class="d-inline delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                <button type="button" class="btn btn-sm btn-danger btn-delete">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -73,8 +73,8 @@
         }
 
         let langUrl = (lang === 'id') 
-            ? "{{ secure_asset('assets/indonesia.json') }}" 
-            : "{{ secure_asset('assets/english.json') }}";
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
 
         table = $('#adminTable').DataTable({
             processing: true,
@@ -95,6 +95,38 @@
             let newLang = $(this).val();
             initDataTable(newLang);
         });
+    });
+</script>
+<script>
+    $(document).on('click', '.btn-delete', function(e) {
+        e.preventDefault();
+        let form = $(this).closest('form');
+
+        Swal.fire({
+            title: 'Yakin hapus admin ini?',
+            text: "Data yang dihapus tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+
+        // Notifikasi sukses dari session (opsional)
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
     });
 </script>
 

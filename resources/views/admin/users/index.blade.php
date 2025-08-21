@@ -33,17 +33,44 @@
             </table>
         </div>
     </div>
+    <a href="{{ route('export.user') }}" class="btn btn-success">
+        <i class="fas fa-file-excel"></i> Export Users
+    </a>
+
 @endsection
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        $('#userTable').DataTable({
+    let table;
+
+    function initDataTable(lang) {
+        // kalau table sudah ada, destroy dulu
+        if ($.fn.DataTable.isDataTable('#userTable')) {
+            $('#userTable').DataTable().destroy();
+        }
+
+        let langUrl = (lang === 'id') 
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
+
+        table = $('#userTable').DataTable({
             processing: true,
             serverSide: false,
             language: {
-                url: "{{ secure_asset('assets/indonesia.json') }}"
+                url: langUrl
             }
+        });
+    }
+
+    $(document).ready(function () {
+        // inisialisasi pertama sesuai locale Laravel
+        let lang = "{{ app()->getLocale() }}";
+        initDataTable(lang);
+
+        // contoh: kalau user ganti bahasa (misal pakai select)
+        $('#languageSelect').change(function() {
+            let newLang = $(this).val();
+            initDataTable(newLang);
         });
     });
 </script>

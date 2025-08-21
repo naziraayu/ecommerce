@@ -47,11 +47,10 @@
                             <td>{{ $category->description }}</td>
                             <td>
                                 <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">{{ __('categories.edit') }}</a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('{{ __('categories.delete confirm') }}');">
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger" type="submit">{{ __('categories.delete') }}</button>
+                                    <button class="btn btn-sm btn-danger delete-btn" type="button">{{ __('categories.delete') }}</button>
                                 </form>
                             </td>
                         </tr>
@@ -104,8 +103,8 @@
         }
 
         let langUrl = (lang === 'id') 
-            ? "{{ secure_asset('assets/indonesia.json') }}" 
-            : "{{ secure_asset('assets/english.json') }}";
+            ? "/assets/indonesia.json" 
+            : "/assets/english.json";
 
         table = $('#categories-table').DataTable({
             processing: true,
@@ -126,6 +125,41 @@
             let newLang = $(this).val();
             initDataTable(newLang);
         });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Hapus kategori pakai SweetAlert
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Yakin hapus kategori?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Notifikasi sukses dari session (opsional)
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
     });
 </script>
 

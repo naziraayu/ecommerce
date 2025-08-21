@@ -45,6 +45,9 @@ class NotificationController extends Controller
         return view('admin.notifications.index', compact('notifications'));
     }
 
+
+
+
     public function show($id): RedirectResponse
     { 
         /** @var User $user */
@@ -87,7 +90,8 @@ class NotificationController extends Controller
                         ->with('success', "Berhasil menandai {$updated} notifikasi sebagai dibaca");
     }
 
-    public function destroy($id): RedirectResponse
+
+   public function destroy($id): RedirectResponse
     {
         /** @var User $user */
         $user = Auth::user();
@@ -138,33 +142,102 @@ class NotificationController extends Controller
         }
     }
 
-    public function redirect($id)
-{
-     /** @var User $user */
-    $user = Auth::user();
+    public function destroyAll(): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
 
-    $notification = $user->notifications()->findOrFail($id);
+        // hapus semua notifikasi user
+        $deleted = $user->notifications()->delete();
 
-
-    // Tandai dibaca
-    $notification->markAsRead();
-
-    switch ($notification->type) {
-        case 'App\Notifications\NewProduct':
-            return redirect()->route('products.show', $notification->data['product_id']);
-        
-        case 'App\Notifications\NewOrder':
-            return redirect()->route('orders.show', $notification->data['order_id']);
-        
-        case 'App\Notifications\NewUserRegistered':
-            return redirect()->route('users.show', $notification->data['user_id']);
-        
-        case 'App\Notifications\OrderStatusChanged':
-            return redirect()->route('orders.show', $notification->data['order_id']);
-        
-        default:
-            return redirect()->route('notifications.index');
+        return redirect()->back()
+            ->with('success', "Berhasil menghapus {$deleted} notifikasi");
     }
-}
+
+    public function redirect($id)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notification = $user->notifications()->findOrFail($id);
+
+
+        // Tandai dibaca
+        $notification->markAsRead();
+
+        switch ($notification->type) {
+            case 'App\Notifications\NewProduct':
+                return redirect()->route('products.show', $notification->data['product_id']);
+            
+            case 'App\Notifications\NewOrder':
+                return redirect()->route('orders.show', $notification->data['order_id']);
+            
+            case 'App\Notifications\NewUserRegistered':
+                return redirect()->route('users.show', $notification->data['user_id']);
+            
+            case 'App\Notifications\OrderStatusChanged':
+                return redirect()->route('orders.show', $notification->data['order_id']);
+            
+            default:
+                return redirect()->route('notifications.index');
+        }
+    }
+    
+    public function apiIndex(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notifications = $user->notifications()
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($notification) {
+                $data = is_array($notification->data) ? $notification->data : [];
+
+                return [
+                    'id' => $notification->id,
+                    'type' => class_basename($notification->type),
+                    'data' => $data,
+                    'created_at' => $notification->created_at->toDateTimeString(),
+                    'is_read' => !is_null($notification->read_at),
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'notifications' => $notifications,
+        ]);
+    }
+
+    public function apiMarkAsRead($id): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notification = $user->notifications()->findOrFail($id);
+        $notification->markAsRead();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifikasi ditandai sebagai dibaca',
+            'notification_id' => $id,
+        ]);
+    }
+
+    public function apiDestroy($id): JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notification = $user->notifications()->findOrFail($id);
+        $notification->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifikasi berhasil dihapus',
+            'notification_id' => $id,
+        ]);
+    }
+
 
 }

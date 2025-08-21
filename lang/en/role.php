@@ -18,4 +18,6 @@ return [
     'error' => 'An error occurred!',
     'placeholder_role' => 'Example: superadmin',
     'placeholder_permissions' => 'Select permissions...',
+    'delete_success' => 'Role successfully deleted.',
+    'yes_delete' => 'Yes, delete this role',
 ];

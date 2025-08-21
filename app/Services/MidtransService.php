@@ -10,6 +10,7 @@ use Midtrans\Transaction;
 use Midtrans\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\OrderStatusChanged;
 
 class MidtransService
 {
@@ -143,6 +144,12 @@ class MidtransService
             }
 
             $order->save();
+
+            try {
+                $order->user->notify(new OrderStatusChanged($order, null));
+            } catch (Exception $e) {
+                Log::error("Gagal kirim notifikasi order: " . $e->getMessage());
+            }
 
             Log::info('Order updated successfully', [
                 'order_id' => $order->id,
