@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Exception;
 use Midtrans\Snap;
-use Midtrans\Config;
+use Midtrans\Config; 
 use App\Models\Order;
 use Midtrans\Transaction;
 use Midtrans\Notification;
@@ -70,6 +70,10 @@ class MidtransService
     public function handleNotification($request = null)
     {
         try {
+            if ($request && !empty($request->all())) {
+                $_POST = $request->all();
+            }
+            
             $notification = new Notification();
 
             $orderIdFromMidtrans = $notification->order_id;

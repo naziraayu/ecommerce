@@ -19,7 +19,7 @@ class PaymentController extends Controller
     {
         $this->midtransService = $midtransService;
     }
-
+ 
     public function show($id)
     {
         $order = Order::findOrFail($id);

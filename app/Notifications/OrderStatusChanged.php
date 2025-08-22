@@ -13,55 +13,19 @@ class OrderStatusChanged extends Notification
     use Queueable;
 
     public $order;
-    public $pdf;
     protected $ccEmails;
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct($order, $pdf, $ccEmails = [])
+   
+    public function __construct($order, $ccEmails = [])
     {
         $this->order = $order;
-        $this->pdf = $pdf;
         $this->ccEmails = $ccEmails;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['database'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    // public function toMail($notifiable)
-    // {
-    //     $mail = (new MailMessage)
-    //         ->subject('Order Status '. $this->order->status)
-    //         ->line('The status of your order has been updated to '. $this->order->status)
-    //         ->action('View Order', url('/orders/' . $this->order->id))
-    //         ->line('Thank you for shopping with us!')
-    //         ->salutation('Admin, Ecommerce')
-    //         ->attachData($this->pdf, 'invoice_order_' . $this->order->id . '.pdf', [
-    //             'mime' => 'application/pdf',
-    //         ]);
-
-    //     if (!empty($this->ccEmails)) {
-    //         $mail->cc($this->ccEmails);
-    //     }
-
-    //     return $mail;
-    // }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(object $notifiable): array
     {
         return [
